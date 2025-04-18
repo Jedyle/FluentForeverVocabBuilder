@@ -2,29 +2,50 @@ import tempfile
 import requests
 from urllib.request import urlopen
 import os
-from bs4 import BeautifulSoup
 
 from app import app
 
 cfg = app.config
 
 
-def get_audio_file_from_html(html):
-    soup = BeautifulSoup(html, features="html.parser")
-    audiofile = soup.find(class_="audiofile")
-    if audiofile is None:
-        return None
-    if audiofile.find("source") is None:
-        return None
-    audio_file = soup.find(class_="audiofile").find("source").attrs["src"]
-    return "https://" + audio_file.strip("/")  # sometimes the src can start with /
+def get_pronunciation_audio(word, language_code):
+    # ex: https://ru.wiktionary.org/w/api.php?action=query&titles=%D1%82%D0%B5%D1%81%D1%82&generator=images
+    url = f"https://{language_code}.wiktionary.org/w/api.php"
 
+    params = {
+        "action": "query",
+        "prop": "imageinfo",
+        "generator": "images",
+        "titles": word,
+        "format": "json",
+        "iiprop": "url",
+    }
 
-def get_data_from_wiktionary(query, language):
-    language_code = "ru"  # hardcoded, TODO CHANGE
-    url = f"https://{language_code}.wiktionary.org/wiki"
-    response = requests.get(f"{url}/{query}")
-    return {"audio": get_audio_file_from_html(response.text)}
+    response = requests.get(url, params=params)
+    data = response.json()
+
+    audio_urls = []
+    if "query" in data:
+        for file_page in data["query"]["pages"].values():
+            title = file_page["title"]
+            if title.endswith(".ogg"):
+                print("file_page", file_page)
+                try:
+                    audio_url = file_page["imageinfo"][0]["url"]
+                    audio_urls.append(audio_url)
+                except KeyError:
+                    pass
+
+    # return the first audio containing "language_code" in the title, otherwise return the first audio
+    if len(audio_urls) == 0:
+        return []
+
+    # Check if any audio URL contains the language code in the title (this prevents cases where we get audio from other languages)
+    for audio_url in audio_urls:
+        title = audio_url.split("/")[-1]
+        if title.lower().startswith(language_code):
+            return audio_url
+    return audio_urls[0]
 
 
 def download_audio(url):
@@ -39,8 +60,9 @@ def download_audio(url):
 
 
 def search(query, language):
-    res = get_data_from_wiktionary(query, language)
-    audio_url = res["audio"]
+    audio_url = get_pronunciation_audio(
+        query, language_code=cfg["LANGUAGE_CODES"][language]
+    )
     audio_filename = None
     if audio_url:
         audio_filename = download_audio(audio_url).name

@@ -9,5 +9,19 @@ class Config(object):
     TEMP_DIR_NAME = "temp"
     TEMP_DIR = os.path.join(os.getcwd(), "app", TEMP_DIR_NAME)
     MAX_IMAGE_SIZE = (400, 400)
-    SIMPLE_WORDS_NOTE_TYPE = "2. Picture Words"
-    AVAILABLE_LANGUAGES = ["Russian"]
+    AVAILABLE_LANGUAGES = [
+        "Russian",
+        "French",
+        "English",
+        "Spanish",
+        "German",
+        "Italian",
+    ]
+    LANGUAGE_CODES = {
+        "Russian": "ru",
+        "French": "fr",
+        "English": "en",
+        "Spanish": "es",
+        "German": "de",
+        "Italian": "it",
+    }
