@@ -33,16 +33,15 @@ class AnkiConnect:
 
     def store_media_file(self, src_file_path, word):
         action = "storeMediaFile"
-        sanitized_word = "".join([c for c in word if c.isalpha() or c.isdigit() or c == ' ' or c == '-']).rstrip()
+        sanitized_word = "".join(
+            [c for c in word if c.isalpha() or c.isdigit() or c == " " or c == "-"]
+        ).rstrip()
         ext = os.path.splitext(src_file_path)[1]
         dst = "{}{}".format(sanitized_word, ext)
 
-        with open(src_file_path, 'rb') as f:
-            b64_output = base64.b64encode(f.read()).decode('utf-8')
-        params = {
-            "filename": dst,
-            "data": b64_output
-        }
+        with open(src_file_path, "rb") as f:
+            b64_output = base64.b64encode(f.read()).decode("utf-8")
+        params = {"filename": dst, "data": b64_output}
 
         self.invoke(action, params)
         return dst
@@ -52,41 +51,53 @@ class AnkiConnect:
         html_notes = "<br>".join(html.escape(notes.strip()).split("\n"))
         return "<div>{}</div>".format(html_notes)
 
-    def add_note(self, deck_name, word, image_paths, word_usage, notes, recording_file_path, ipa_text, test_spelling):
+    def add_note(
+        self,
+        deck_name,
+        word,
+        image_paths,
+        notes_front,
+        notes_back,
+        recording_file_path,
+        reverse,
+    ):
         stored_images = []
         for i, image_path in enumerate(image_paths):
-            stored_images.append(self.store_media_file(image_path, "{}-{}".format(word, i)))
+            stored_images.append(
+                self.store_media_file(image_path, "{}-{}".format(word, i))
+            )
 
         picture_field = ""
         for stored_image in stored_images:
             picture_field += '<img src="{}">'.format(stored_image)
 
-        escaped_gender_text = html.escape(word_usage.replace("&", "&amp;"))
-        formatted_notes = self.format_notes(notes)
-        gender_notes_field = escaped_gender_text + formatted_notes
-
-        pronunciation_field = ipa_text
+        formatted_notes_front = self.format_notes(notes_front)
+        formatted_notes_back = self.format_notes(notes_back)
 
         if recording_file_path:
             stored_audio_filename = self.store_media_file(recording_file_path, word)
-            pronunciation_field += "[sound:{}]".format(stored_audio_filename)
+            pronunciation_field = "[sound:{}]".format(stored_audio_filename)
 
-        test_spelling = 'y' if test_spelling else ''
+        reverse = "y" if reverse else ""
 
         params = {
             "note": {
                 "deckName": deck_name,
-                "modelName": cfg["SIMPLE_WORDS_NOTE_TYPE"],
+                "modelName": "Basiс (optional reversed card)",
                 "fields": {
-                    "Word": word,
-                    "Picture": picture_field,
-                    "Gender, Personal Connection, Extra Info (Back side)": gender_notes_field,
-                    "Pronunciation (Recording and/or IPA)": pronunciation_field,
-                    "Test Spelling? (y = yes, blank = no)": test_spelling
+                    "Front": picture_field + "<br>" + formatted_notes_front,
+                    "Back": word
+                    + "<br>"
+                    + pronunciation_field
+                    + "<br>"
+                    + formatted_notes_back,
+                    "Add Reverse": reverse,
                 },
-                "tags": []
+                "tags": [],
             }
         }
+
+        print(params)
 
         note_id = self.invoke("addNote", params)
         return note_id

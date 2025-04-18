@@ -8,6 +8,7 @@ from typing import List
 
 from PIL import Image
 from google_images_download import google_images_download
+from bing_image_downloader import downloader
 
 from app import app
 
@@ -20,6 +21,8 @@ save_path_pat = r".*(temp.*)"
 def download_images(query: str, page: int, language=None) -> List[str]:
     response = google_images_download.googleimagesdownload()
 
+    print("hello", response)
+
     num_images = cfg["NUM_GOOGLE_IMAGES"]
     end = num_images * (page + 1)
     offset = num_images * page
@@ -27,16 +30,23 @@ def download_images(query: str, page: int, language=None) -> List[str]:
         offset += 1
 
     args = {
-        "keywords": query,
-        "language": language or cfg["GOOGLE_IMAGES_LANGUAGE"],
-        "output_directory": cfg["TEMP_DIR"],
+        "output_dir": cfg["TEMP_DIR"],
         "limit": end,
-        "format": "jpg",
-        "offset": offset
+        "adult_filter_off": True,
+        "force_replace": False,
     }
 
-    paths = response.download(args)
-    relative_paths = [re.findall(save_path_pat, p)[0].replace(os.sep, '/') for p in paths[query] if p]
+    downloader.download(query, **args)
+
+    # find all the images in the temp dir named after the query
+    # and return their paths
+
+    dir_name_absolute = os.path.join(cfg["TEMP_DIR"], query)
+    relative_paths = [
+        os.path.join(cfg["TEMP_DIR_NAME"], query, f)
+        for f in os.listdir(dir_name_absolute)
+    ]
+
     return relative_paths
 
 
@@ -46,7 +56,7 @@ def generate_thumbnail(path: str) -> str:
 
     thumb_filename = filename + ".thumb" + ext
     thumbnail_img = Image.open(path)
-    thumbnail_img.thumbnail(cfg["MAX_IMAGE_SIZE"], Image.ANTIALIAS)
+    thumbnail_img.thumbnail(cfg["MAX_IMAGE_SIZE"], Image.Resampling.LANCZOS)
     thumbnail_img.save(thumb_filename, format=thumbnail_img.format)
     return thumb_filename
 
@@ -67,6 +77,8 @@ def save_base64_image_data(data_string: str) -> str:
     if len(match.groups()) > 1:
         ext = guess_extension(match[1])
         data = match[2].encode()
-        with NamedTemporaryFile(mode='wb', dir=os.path.join(app.root_path, "temp"), suffix=ext, delete=False) as f:
+        with NamedTemporaryFile(
+            mode="wb", dir=os.path.join(app.root_path, "temp"), suffix=ext, delete=False
+        ) as f:
             f.write(base64.decodebytes(data))
             return f.name

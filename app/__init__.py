@@ -21,7 +21,9 @@ def setup_temp_dir():
 
 
 def remove_temp_files():
-    for r, dirs, files in os.walk(os.path.join(os.getcwd(), cfg["TEMP_DIR"]), topdown=False):
+    for r, dirs, files in os.walk(
+        os.path.join(os.getcwd(), cfg["TEMP_DIR"]), topdown=False
+    ):
         for name in files:
             os.remove(os.path.join(r, name))
         for name in dirs:
@@ -30,4 +32,3 @@ def remove_temp_files():
 
 remove_temp_files()
 setup_temp_dir()
-

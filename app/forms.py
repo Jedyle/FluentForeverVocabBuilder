@@ -11,9 +11,8 @@ class SearchForm(FlaskForm):
 
 
 class AnkiForm(FlaskForm):
-    ipa = StringField("IPA")
-    word_usage = SelectField("Word Usage")
     image_query = StringField("Image Query")
-    notes = TextAreaField("Notes")
-    test_spelling = BooleanField("Test Spelling?")
+    notes_front = TextAreaField("Notes Front (side with image)")
+    notes_back = TextAreaField("Notes Back (side with word and audio)")
+    reverse = BooleanField("Add reverse card (target to original) ?")
     submit = SubmitField("Add to Anki")

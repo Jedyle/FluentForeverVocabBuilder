@@ -11,7 +11,7 @@ ac = anki_connect.AnkiConnect()
 save_path_pat = r".*(temp.*)"
 
 
-@app.route('/')
+@app.route("/")
 def index():
     decks = ac.get_deck_names()
     form = forms.SearchForm()
@@ -27,19 +27,29 @@ def search():
     deck_name = req.get("deck_name")
     language = req.get("language")
     search_result = wiktionary.search(word, language)
+    print("search_result", search_result)
     form = forms.AnkiForm()
-    form.ipa.data = search_result.get("ipa") or ""
-    combo_choices = ["{}: {}".format(c[0], c[1]) for c in search_result.get("definitions")]
-    form.word_usage.choices = [(i, i) for i in combo_choices]
+    # form.ipa.data = search_result.get("ipa") or ""
+    # combo_choices = [
+    #     "{}: {}".format(c[0], c[1]) for c in search_result.get("definitions")
+    # ]
+    # form.word_usage.choices = [(i, i) for i in combo_choices]
     audio_filename = search_result.get("audio_filename")
     if audio_filename:
-        audio_relative_filename = re.findall(save_path_pat, audio_filename)[0].replace(os.sep, '/')
+        audio_relative_filename = re.findall(save_path_pat, audio_filename)[0].replace(
+            os.sep, "/"
+        )
     else:
         audio_relative_filename = ""
     form.image_query.data = word
 
-    return render_template("search-results.html", word=word, deck=deck_name, form=form,
-                           audio_filename=audio_relative_filename)
+    return render_template(
+        "search-results.html",
+        word=word,
+        deck=deck_name,
+        form=form,
+        audio_filename=audio_relative_filename,
+    )
 
 
 @app.route("/search-images")
@@ -57,8 +67,8 @@ def add():
     args = request.values
     word = args.get("word")
     deck = args.get("decks")
-    ipa = args.get("ipa")
-    word_usage = args.get("word_usage")
+    # ipa = args.get("ipa")
+    # word_usage = args.get("word_usage")
     audio_arg = args.get("audio_filename")
     if audio_arg:
         audio_filename = os.path.join(app.root_path, audio_arg)
@@ -68,17 +78,18 @@ def add():
     parsed_json_image_paths = json.loads(json_image_paths)
     image_paths = list(map(images.format_json_image_path, parsed_json_image_paths))
     thumbnail_image_paths = list(map(images.generate_thumbnail, image_paths))
-    notes = args.get("notes")
-    test_spelling = args.get("test_spelling") or ""
-    ac.add_note(deck_name=deck,
-                word=word,
-                image_paths=thumbnail_image_paths,
-                word_usage=word_usage,
-                notes=notes,
-                recording_file_path=audio_filename,
-                ipa_text=ipa,
-                test_spelling=test_spelling)
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    notes_front = args.get("notes_front")
+    notes_back = args.get("notes_back")
+    ac.add_note(
+        deck_name=deck,
+        word=word,
+        image_paths=thumbnail_image_paths,
+        notes_front=notes_front,
+        notes_back=notes_back,
+        recording_file_path=audio_filename,
+        reverse=args.get("reverse") or False,
+    )
+    return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 @app.route("/temp/<path:path>")

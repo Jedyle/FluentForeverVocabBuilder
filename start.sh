@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate && export FLASK_APP=ff.py && flask run
+export FLASK_APP=ff.py && export FLASK_DEBUG=1 && flask run
