@@ -1,3 +1,9 @@
+# IMPORTANT NOTES
+
+This project has been forked from https://github.com/cofinley/FluentForeverVocabBuilder , which was inactive a long time. I adapted it to make it work for my own needs.
+
+The README below also comes from the original project, but I have adapted it and crossed the outdated pieces of information.
+
 # Fluent Forever Vocab Builder
 
 [Video demo](https://raw.githubusercontent.com/cofinley/FluentForeverVocabBuilder/master/demo.webm)
@@ -10,10 +16,10 @@ Basically a quick way to do [the vocab step](https://blog.fluent-forever.com/sim
 Decreases card creation time from 6+ minutes to 30 seconds.
 
 Gathers the following info:
-- IPA (Wiktionary)
+~~- IPA (Wiktionary)~~
 - Pronunciation recording (Wiktionary)
-- Gender/Word Usage (Wiktionary)
-- Images (Google)
+~~- Gender/Word Usage (Wiktionary)~~
+- Images (~~Google~~ Bing)
     - Resized automatically to reduce AnkiWeb sync time
 - Personal notes (you)
 
@@ -23,7 +29,7 @@ Gathers the following info:
     - Words are repeated over and over, sometimes endlessly
     - Update, May 2019: Bugs are fixed, but I think I like this better anyway.
 - I found I like having editable notes that I have full control over.
-- App is maybe worth it ($10/mo) for its pre-made content, grammar difficulty levels, and hopes of tutors. But other than that, Anki is much more mature and flexible. 
+- App is maybe worth it ($10/mo) for its pre-made content, grammar difficulty levels, and hopes of tutors. But other than that, Anki is much more mature and flexible.
 - We can also use Google Images here over Bing b/c of small scale.
 
 ## Requirements
