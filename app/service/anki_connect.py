@@ -74,6 +74,7 @@ class AnkiConnect:
         formatted_notes_front = self.format_notes(notes_front)
         formatted_notes_back = self.format_notes(notes_back)
 
+        pronunciation_field = ""
         if recording_file_path:
             stored_audio_filename = self.store_media_file(recording_file_path, word)
             pronunciation_field = "[sound:{}]".format(stored_audio_filename)
