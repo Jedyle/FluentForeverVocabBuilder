@@ -16,9 +16,9 @@ Basically a quick way to do [the vocab step](https://blog.fluent-forever.com/sim
 Decreases card creation time from 6+ minutes to 30 seconds.
 
 Gathers the following info:
-~~- IPA (Wiktionary)~~
+- ~~- IPA (Wiktionary)~~
 - Pronunciation recording (Wiktionary)
-~~- Gender/Word Usage (Wiktionary)~~
+- ~~- Gender/Word Usage (Wiktionary)~~
 - Images (~~Google~~ Bing)
     - Resized automatically to reduce AnkiWeb sync time
 - Personal notes (you)
@@ -36,9 +36,8 @@ Gathers the following info:
 
 - Python 3
 - ffmpeg installed and added to system PATH (for previewing pronunciation audio)
-- [Model deck](http://www.fluent-forever.com/wp-content/uploads/2014/05/Model-Deck-May-2014.apkg) from FF imported into Anki
-  - This program only creates the "2. Picture Words" note type at the moment
-    - Will generate the spelling (optional), production, and comprehension cards automatically
+- ~~ [Model deck](http://www.fluent-forever.com/wp-content/uploads/2014/05/Model-Deck-May-2014.apkg) from FF imported into Anki~~
+- This version of the script creates flashcards of type "Basic (optional reversed)".
 - [AnkiConnect add-on](https://foosoft.net/projects/anki-connect/) (code 2055492159)
 - Anki needs to be open before starting the app
 
