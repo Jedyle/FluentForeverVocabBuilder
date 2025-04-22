@@ -6,7 +6,7 @@ The README below also comes from the original project, but I have adapted it and
 
 # Fluent Forever Vocab Builder
 
-[Video demo](https://raw.githubusercontent.com/cofinley/FluentForeverVocabBuilder/master/demo.webm)
+[Video demo](https://raw.githubusercontent.com/Jedyle/FluentForeverVocabBuilder/master/demo.mp4)
 
 This is a web app that searches and scrapes info for a vocab word and builds a card for your anki deck, based off the FF model deck.
 - Web app because Anki add-ons are not well documented and this separates concerns a bit. Was tkinter but it's not great to work with long-term.
