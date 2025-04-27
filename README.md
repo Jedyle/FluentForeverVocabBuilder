@@ -36,14 +36,14 @@ Gathers the following info:
 
 - Python 3
 - ffmpeg installed and added to system PATH (for previewing pronunciation audio)
-- ~~ [Model deck](http://www.fluent-forever.com/wp-content/uploads/2014/05/Model-Deck-May-2014.apkg) from FF imported into Anki~~
+- ~~-Model deck from FF imported into Anki~~
 - This version of the script creates flashcards of type "Basic (optional reversed)".
 - [AnkiConnect add-on](https://foosoft.net/projects/anki-connect/) (code 2055492159)
 - Anki needs to be open before starting the app
 
 ## Installation
 
-- `git clone https://github.com/cofinley/FluentForeverVocabBuilder.git`
+- `git clone https://github.com/Jedyle/FluentForeverVocabBuilder.git`
 - Go into the project's directory
 - `python -m venv venv`
   - Python 3
