@@ -1,6 +1,6 @@
 import tempfile
 import requests
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 import os
 
 from app import app
@@ -21,7 +21,12 @@ def get_pronunciation_audio(word, language_code):
         "iiprop": "url",
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(
+        headers={"User-Agent": "BeFluentVocabHelper"},
+        url=url,
+        params=params,
+    )
+    print(response.status_code, response.content)
     data = response.json()
 
     audio_urls = []
@@ -51,7 +56,14 @@ def get_pronunciation_audio(word, language_code):
 def download_audio(url):
     temp_dir = os.path.join(os.getcwd(), cfg["TEMP_DIR"])
     print("url", url)
-    data = urlopen(url).read()
+    # add header to urlopen request
+    data = urlopen(
+        url=Request(
+            url,
+            headers={"User-Agent": "BeFluentVocabHelper"},
+        )
+    ).read()
+
     with tempfile.NamedTemporaryFile(
         mode="wb", delete=False, suffix=".ogg", dir=temp_dir
     ) as f:
